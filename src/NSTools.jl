@@ -13,6 +13,5 @@ include("IO.jl")
 using .IO
 
 include("Visualize.jl")
-using .Visualize
 
 end

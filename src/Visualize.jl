@@ -1,2 +1,2 @@
-module Visualize
-end
+
+function plot_data end
