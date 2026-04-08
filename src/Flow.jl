@@ -206,7 +206,7 @@ function set_flow!(
 
     s = type(f.s)
     kₚ = type(f.kₚ)
-    aₛ = (2 * s + 1)^(s + 1) / 2^s / factorial(s)
+    aₛ = (2 * s + 1)^(s + 1) / 2^s / factorial(f.s)
 
     E = zeros(type, nx, ny)
     for j in 1:ny
