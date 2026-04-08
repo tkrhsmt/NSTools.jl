@@ -5,8 +5,8 @@ Generate ticks covering x spanned by π/2.
 """
 function generate_ticks(x)
     step = π / 2
-    ticks = x[1]:step:x[end]
-    num_ticks = round(Int, x[end] / step)
+    num_ticks = ceil(Int, x[end] / step)
+    ticks = x[1]:step:step * num_ticks
 
     labels = []
     for i in 0:num_ticks
