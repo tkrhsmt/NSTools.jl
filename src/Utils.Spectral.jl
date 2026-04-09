@@ -4,6 +4,7 @@ using FFTW
 
 export make_spectral
 export energy_spectral, prod_spectral
+export helmholz_decomp
 
 function make_spectral(
     E_f::Array,
@@ -101,6 +102,44 @@ function prod_spectral(
 
     # make spectral object
     return make_spectral(T_f)
+end
+
+function helmholz_decomp(
+    ux::Array,
+    uy::Array
+)
+
+    # wavenumber grid
+    grid = size(ux)
+    kx = fftfreq(grid[1], grid[1])
+    ky = fftfreq(grid[2], grid[2])
+
+    ux_f = FFTW.fft(ux)
+    uy_f = FFTW.fft(uy)
+
+    # Helmholtz decomposition in spectral space
+    for j in 1:grid[2]
+        for i in 1:grid[1]
+            if kx[i] == 0 && ky[j] == 0
+                ux_f[i, j] = 0.0 + 0.0im
+                uy_f[i, j] = 0.0 + 0.0im
+            else
+                tmp1 = kx[i] * (kx[i] * ux_f[i, j] + ky[j] * uy_f[i, j]) / (kx[i]^2 + ky[j]^2)
+                tmp2 = ky[j] * (kx[i] * ux_f[i, j] + ky[j] * uy_f[i, j]) / (kx[i]^2 + ky[j]^2)
+                ux_f[i, j] = tmp1
+                uy_f[i, j] = tmp2
+            end
+        end
+    end
+
+    ux_d = real(FFTW.ifft(ux_f))
+    uy_d = real(FFTW.ifft(uy_f))
+
+    ux_s = ux .- ux_d
+    uy_s = uy .- uy_d
+
+    return (ux_s, uy_s), (ux_d, uy_d)
+
 end
 
 end
